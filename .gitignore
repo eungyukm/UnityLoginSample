@@ -58,3 +58,11 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# gitIgnore
+Login/[Ll]ibrary/
+Login/[Tt]emp/
+Login/[Oo]bj/
+Login/[Bb]uild/
+Login/[Bb]uilds/
+Login/[Ll]ogs/
+Login/[Mm]emoryCaptures/
