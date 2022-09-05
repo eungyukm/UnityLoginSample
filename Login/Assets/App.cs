@@ -8,26 +8,26 @@ using UnityEngine.UI;
 
 public class memeber_res
 {
-    public string membername;
-    public string password;
-    public string created_at;
+    public string user_name;
+    public string user_id;
+    public string user_pw;
 
-    public memeber_res(string membername, string password, string created_at)
+    public memeber_res(string user_name, string user_id, string user_pw)
     {
-        this.membername = membername;
-        this.password = password;
-        this.created_at = created_at;
+        this.user_name = user_name;
+        this.user_id = user_id;
+        this.user_pw = user_pw;
     }
 }
 
 public class member_req
 {
-    public string membername;
-    public string password;
-    public member_req(string membername, string password)
+    public string user_id;
+    public string user_pw;
+    public member_req(string user_id, string user_pw)
     {
-        this.membername = membername;
-        this.password = password;
+        this.user_id = user_id;
+        this.user_pw = user_pw;
     }
 }
 
@@ -37,7 +37,8 @@ public class App : MonoBehaviour
     public InputField ifPassword;
     public Button btnSubmit;
     public Button btnGet;
-    private string host = "http://127.0.0.1:8000/";
+    // private string host = "http://127.0.0.1:8000/";
+    private string host = "https://obliy.azurewebsites.net/";
 
     // Start is called before the first frame update
     void Start()
@@ -47,8 +48,9 @@ public class App : MonoBehaviour
             Debug.LogFormat("{0} {1}",this.ifMemberName.text, this.ifPassword.text);
             var info = new member_req(this.ifMemberName.text, this.ifPassword.text);
 
-            StartCoroutine(this.Post2("API/POST", info));
-            // this.Post("/member", info);
+            // StartCoroutine(this.Post("api/account/login_result", info));
+            StartCoroutine(this.Post2("api/account/login_result", info));
+            
         });
 
         this.btnGet.onClick.AddListener(() =>
@@ -75,17 +77,16 @@ public class App : MonoBehaviour
             var arrMembers = JsonConvert.DeserializeObject<memeber_res[]>(json);
             foreach (var member in arrMembers)
             {
-                Debug.LogFormat("{0} {1}", member.membername, member.created_at);
+                Debug.LogFormat("{0} {1}", member.user_id, member.user_pw);
             }
         }
     }
 
     private IEnumerator Post(string uri, member_req info)
     {
-        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
         var form = new WWWForm();
-        form.AddField("membername", info.membername);
-        form.AddField("password", info.password);
+        form.AddField("user_id", info.user_id);
+        form.AddField("user_pw", info.user_pw);
         var url = string.Format("{0}{1}", this.host, uri);
         var www = UnityWebRequest.Post(url, form);
         yield return www.SendWebRequest();
@@ -97,6 +98,7 @@ public class App : MonoBehaviour
         else
         {
             Debug.LogFormat("www.responseCode : {0}", www.responseCode);
+            Debug.LogFormat("data.responseCode : {0}", www.downloadHandler.text);
         }
     }
 
@@ -117,6 +119,7 @@ public class App : MonoBehaviour
         else
         {
             Debug.LogFormat("request.responseCode: {0}", request.responseCode);
+            Debug.LogFormat("data.responseCode : {0}", request.downloadHandler.text);
         }
     }
 }
